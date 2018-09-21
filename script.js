@@ -34,7 +34,10 @@ const tooltip = d3.select('#chart').append('div')
 
 
 // Get Data
+const movieURL = ' https://cdn.rawgit.com/freeCodeCamp/testable-projects-fcc/a80ce8f9/src/data/tree_map/movie-data.json'
 const chart = async () => {
-
+  let getMovieData = await fetch(movieURL)
+  let movieData = await getMovieData.json()
+  console.log(`movieData: `, movieData)
 }
 chart()
