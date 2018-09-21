@@ -8,6 +8,10 @@ const padding = 60
 const width = 500
 const height = 500
 
+// Color Scale
+const color = d3.scaleOrdinal(d3.schemeCategory10)
+console.log(color)
+
 // Create svg and append to chart div
 const svg = d3.select('#chart')
   .append('svg')
@@ -43,12 +47,12 @@ const chart = async () => {
   let movieData = await getMovieData.json()
   console.log(`movieData: `, movieData)
 
-  var root = d3.hierarchy(movieData, d => d.childred)
+  const root = d3.hierarchy(movieData, d => d.childred)
     .sum(d => d.size)
 
   treemap(root)  
   console.log(`root`, root)
-  var node = svg.selectAll('.node')
+  const node = svg.selectAll('.node')
     .data(root.leaves())
     .enter().append('g')
     .attr('class', 'node')
@@ -57,7 +61,17 @@ const chart = async () => {
   node.append('rect')
     .attr('x', d => d.x0)
     .attr('y', d=> d.y0)
-    .attr('width', d => d.x1 ? d.x1 : 100)
-    .attr('height', d => d.y1 ? d.y1 : 100)
+    .attr('width', d => d.x1 ? d.x1 : null)
+    .attr('height', d => d.y1 ? d.y1 : null)
+    // .attr('fill', d => d.children ? null: color(d.name))
+    .attr('fill', d => color(d.data.name))
+    .attr('stroke', '#fff')
+  node.append('text')
+    .attr('class', 'data-label')
+    .attr('x', d => (d.x0 + d.x1)/2)
+    .attr('y', d => (d.y0+ d.y1)/2)
+    .text(d => d.data.name)
+
+  
 }
 chart()
