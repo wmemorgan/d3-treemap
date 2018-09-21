@@ -10,8 +10,9 @@ const height = 500
 
 // Color Scale
 const color = d3.scaleOrdinal(d3.schemeCategory10)
-console.log(color)
-
+console.log(`d3.schemeCategory10`, d3.schemeCategory10)
+const palette = d3.schemeCategory10.slice(0, 7)
+console.log(`palette: `, palette)
 // Create svg and append to chart div
 const svg = d3.select('#chart')
   .append('svg')
@@ -40,6 +41,8 @@ const tooltip = d3.select('#chart').append('div')
   .style('opacity', 0)
 
 
+
+
 // Get Data
 const movieURL = ' https://cdn.rawgit.com/freeCodeCamp/testable-projects-fcc/a80ce8f9/src/data/tree_map/movie-data.json'
 const chart = async () => {
@@ -47,24 +50,52 @@ const chart = async () => {
   let movieData = await getMovieData.json()
   console.log(`movieData: `, movieData)
 
-  const root = d3.hierarchy(movieData, d => d.childred)
-    .sum(d => d.size)
+  const root = d3.hierarchy(movieData)
+    .eachBefore(d => d.data.id = (d.parent ? d.parent.data.id + "." : "") + d.data.name)
+    .sum(d => d.value)
+    .sort((a, b) => b.height - a.height || b.value - a.value)
 
   treemap(root)  
   console.log(`root`, root)
-  const node = svg.selectAll('.node')
+  console.log(`d3.set(root.leaves(), d => d.data.category)`, d3.set(root.leaves(), d => d.data.category).count)
+  console.log(`root.children.length `, root.children.length)
+  console.log(`d3.schemeCategory10[5]`, d3.schemeCategory10[5])
+
+  // Legend (using d3 SVG Legend (v4) library)
+  const ordinal = d3.scaleOrdinal()
+    .domain(['Action','Drama','Adventure','Family','Animation','Comedy','Biography']) //scale for percentage label format
+    // .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2"])
+    .range(palette)
+
+  const legendOrdinal = d3.legendColor()
+    .orient('horizontal')
+    .shapePadding(padding)
+    .scale(ordinal) 
+
+  svg.append("g")
+    .attr("class", "legendOrdinal")
+    .attr('id', 'legend')
+    .attr('transform', `translate(${0}, ${height + margin.top + 20})`)
+
+  svg.select(".legendOrdinal")
+    .attr('class', 'legend-item')
+    .call(legendOrdinal)
+
+  // Treemap
+  const node = svg.selectAll('g')
     .data(root.leaves())
     .enter().append('g')
-    .attr('class', 'node')
-    .attr(`transform`, `translate(${width / 2}, ${padding / 0.75})`)
+    // .attr('class', 'node')
+    .attr(`transform`, d => `translate(${d.x0}, ${d.y0})`)
 
   node.append('rect')
-    .attr('x', d => d.x0)
-    .attr('y', d=> d.y0)
-    .attr('width', d => d.x1 ? d.x1 : null)
-    .attr('height', d => d.y1 ? d.y1 : null)
-    // .attr('fill', d => d.children ? null: color(d.name))
-    .attr('fill', d => color(d.data.name))
+    .attr('class', 'tile')
+    .attr('data-name', d => d.data.name)
+    .attr('data-category', d => d.data.category)
+    .attr('data-value', d => d.data.value)
+    .attr('width', d => d.x1 - d.x0)
+    .attr('height', d => d.y1 - d.y0)
+    .attr('fill', d => color(d.data.category))
     .attr('stroke', '#fff')
   node.append('text')
     .attr('class', 'data-label')
