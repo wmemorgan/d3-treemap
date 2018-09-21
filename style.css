@@ -68,3 +68,7 @@ span {
 /* .node {
   fill: black;
 }  */
+
+.data-label {
+  text-anchor: middle;
+}
