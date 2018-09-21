@@ -67,19 +67,46 @@ const chart = async () => {
     // .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2"])
     .range(palette)
 
-  const legendOrdinal = d3.legendColor()
-    .orient('horizontal')
-    .shapePadding(padding)
-    .scale(ordinal) 
+  // const legendOrdinal = d3.legendColor()
+  //   .orient('horizontal')
+  //   .shapePadding(padding)
+  //   .scale(ordinal) 
 
-  svg.append("g")
-    .attr("class", "legendOrdinal")
+  // svg.append("g")
+  //   .attr("class", "legendOrdinal")
+  //   .attr('id', 'legend')
+  //   .attr('transform', `translate(${0}, ${height + margin.top + 20})`)
+
+  // svg.select(".legendOrdinal")
+  //   .attr('class', 'legend-item')
+  //   .call(legendOrdinal)
+
+  const legend = svg.append('g')
     .attr('id', 'legend')
-    .attr('transform', `translate(${0}, ${height + margin.top + 20})`)
 
-  svg.select(".legendOrdinal")
+  // Add the color map
+  legend.selectAll("rect")
+    .data(palette)
+    .enter()
+    .append('rect')
     .attr('class', 'legend-item')
-    .call(legendOrdinal)
+    .attr("width", (width - padding) / palette.length)
+    .attr("height", 20)
+    .attr('x', (d, i) => i * ((width - padding) / palette.length))
+    .attr('y', height + 20)
+    .style("fill", (d) => d)
+
+  legend.append('g')
+    // .attr('transform', `translate(${0}, ${height + 45})`)
+    // .attr('transform', `translate(${0}, ${height + margin.top + 20})`)
+    .call(d3.axisBottom(ordinal))
+
+  legend.append('text')
+    .attr('x', (width - padding) / 2)
+    .attr('y', height + 10)
+    .attr('id', 'legend-title')
+    .text('Temperature Gauge')
+
 
   // Treemap
   const node = svg.selectAll('g')
@@ -97,6 +124,21 @@ const chart = async () => {
     .attr('height', d => d.y1 - d.y0)
     .attr('fill', d => color(d.data.category))
     .attr('stroke', '#fff')
+    .on('mouseover', (d) => {
+      tooltip.transition().duration(200).style('opacity', 0.9)
+      tooltip.html(
+        `<p>Name:${d.data.name}<br>
+          Category:${d.data.category}<br>
+          Value:${d.data.value}
+        </p>`)
+        .attr('data-value', d.data.value)
+        .style('left', `${d3.event.layerX}px`)
+        .style('top', `${d3.event.layerY - 28}px`)
+    })
+    .on('mouseout', () => tooltip.transition().duration(500).style('opacity', 0)) 
+
+
+
   node.append('text')
     .attr('class', 'data-label')
     .attr('x', d => (d.x0 + d.x1)/2)
