@@ -15,6 +15,9 @@ const svg = d3.select('#chart')
   .attr('width', width + margin.left + margin.right)
   .attr('height', height + margin.top + margin.bottom)
 
+// Create treemap container
+const treemap = d3.treemap().size([width, height])
+
 // Title
 svg.append('text')
   .text('My Treemap (Working Title)')
@@ -39,5 +42,22 @@ const chart = async () => {
   let getMovieData = await fetch(movieURL)
   let movieData = await getMovieData.json()
   console.log(`movieData: `, movieData)
+
+  var root = d3.hierarchy(movieData, d => d.childred)
+    .sum(d => d.size)
+
+  treemap(root)  
+  console.log(`root`, root)
+  var node = svg.selectAll('.node')
+    .data(root.leaves())
+    .enter().append('g')
+    .attr('class', 'node')
+    .attr(`transform`, `translate(${width / 2}, ${padding / 0.75})`)
+
+  node.append('rect')
+    .attr('x', d => d.x0)
+    .attr('y', d=> d.y0)
+    .attr('width', d => d.x1 ? d.x1 : 100)
+    .attr('height', d => d.y1 ? d.y1 : 100)
 }
 chart()
