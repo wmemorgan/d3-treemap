@@ -5,8 +5,8 @@ const margin = { top: 50, right: 20, bottom: 50, left: 100 }
 const padding = 60
 
 // Set the width and height using the current width and height of the div
-const width = 960
-const height = 600
+const width = 500
+const height = 500
 
 // Create svg and append to chart div
 const svg = d3.select('#chart')
