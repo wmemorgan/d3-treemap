@@ -34,7 +34,8 @@ const chart = async () => {
   console.log(`root`, root)
   console.log(`d3.set(root.leaves(), d => d.data.category)`, d3.set(root.leaves(), d => d.data.category).values())
   console.log(`root.children.length `, root.children.length)
-
+  const categories = d3.set(root.leaves(), d => d.data.category).values()
+  console.log(`categories: ${categories}`)
   // Title
   const title = d3.select('#title')
     .append('h2')
@@ -59,7 +60,7 @@ const chart = async () => {
  
   // Legend scale
   const ordinal = d3.scaleOrdinal()
-    .domain(d3.set(root.leaves(), d => d.data.category).values())
+    .domain([d3.set(root.leaves(), d => d.data.category).values()])
     .range(palette)
 
   // Legend (using d3 SVG Legend (v4) library)
@@ -83,7 +84,7 @@ const chart = async () => {
 
   // Add the color map
   legend.selectAll("rect")
-    .data(palette)
+    .data(categories)
     .enter()
     .append('rect')
     .attr('class', 'legend-item')
@@ -91,7 +92,9 @@ const chart = async () => {
     .attr("height", 20)
     .attr('x', (d, i) => i * ((width - padding) / palette.length))
     .attr('y', height + 20)
-    .style("fill", (d) => d)
+    .style("fill", (d) => {
+      console.log(`${d} leads to ${ordinal(d)}`)
+      ordinal(d)})
 
   legend.append('g')
     // .attr('transform', `translate(0, ${height})`)
