@@ -79,27 +79,27 @@ const chart = async () => {
   //   .call(legendOrdinal)
 
   // Legend (manual version)
-  const legend = d3.selectAll('#legend')
-    .append('g')
+  // const legend = d3.selectAll('#legend')
+  //   .append('g')
 
-  // Add the color map
-  legend.selectAll("rect")
-    .data(categories)
-    .enter()
-    .append('rect')
-    .attr('class', 'legend-item')
-    .attr("width", (width - padding) / palette.length)
-    .attr("height", 20)
-    .attr('x', (d, i) => i * ((width - padding) / palette.length))
-    .attr('y', height + 20)
-    .style("fill", (d) => {
-      console.log(`${d} leads to ${ordinal(d)}`)
-      ordinal(d)})
+  // // Add the color map
+  // legend.selectAll("rect")
+  //   .data(categories)
+  //   .enter()
+  //   .append('rect')
+  //   .attr('class', 'legend-item')
+  //   .attr("width", (width - padding) / palette.length)
+  //   .attr("height", 20)
+  //   .attr('x', (d, i) => i * ((width - padding) / palette.length))
+  //   .attr('y', height + 20)
+  //   .style("fill", (d) => {
+  //     console.log(`${d} leads to ${ordinal(d)}`)
+  //     ordinal(d)})
 
-  legend.append('g')
-    // .attr('transform', `translate(0, ${height})`)
-    // .attr('transform', `translate(${padding}, ${height + margin.top + 20})`)
-    .call(d3.axisBottom(ordinal))
+  // legend.append('g')
+  //   // .attr('transform', `translate(0, ${height})`)
+  //   // .attr('transform', `translate(${padding}, ${height + margin.top + 20})`)
+  //   .call(d3.axisBottom(ordinal))
 
 
   // // Treemap
