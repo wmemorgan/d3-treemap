@@ -42,6 +42,7 @@ body {
 }
 
 .graph{
+  font-size: 10px;
   margin: 0 auto;
   padding: 1rem;
   padding-left: 2rem;
