@@ -1,12 +1,12 @@
 // Data Visualization Script
 
 // Set the margin and padding of the SVG
-const margin = { top: 50, right: 20, bottom: 50, left: 100 }
+const margin = { top: 50, right: 50, bottom: 50, left: 50 }
 const padding = 60
 
 // Set the width and height using the current width and height of the div
-const width = 500
-const height = 500
+const width = 991
+const height = 743
 
 // Color Scale
 const color = d3.scaleOrdinal(d3.schemeCategory10)
@@ -39,9 +39,6 @@ svg.append('text')
 const tooltip = d3.select('#chart').append('div')
   .attr('id', 'tooltip')
   .style('opacity', 0)
-
-
-
 
 // Get Data
 const movieURL = ' https://cdn.rawgit.com/freeCodeCamp/testable-projects-fcc/a80ce8f9/src/data/tree_map/movie-data.json'
@@ -81,6 +78,7 @@ const chart = async () => {
   //   .attr('class', 'legend-item')
   //   .call(legendOrdinal)
 
+  // Legend (manual version)
   const legend = svg.append('g')
     .attr('id', 'legend')
 
@@ -97,15 +95,9 @@ const chart = async () => {
     .style("fill", (d) => d)
 
   legend.append('g')
-    // .attr('transform', `translate(${0}, ${height + 45})`)
-    // .attr('transform', `translate(${0}, ${height + margin.top + 20})`)
+    .attr('transform', `translate(0, ${height + 45})`)
+    // .attr('transform', `translate(${padding}, ${height + margin.top + 20})`)
     .call(d3.axisBottom(ordinal))
-
-  legend.append('text')
-    .attr('x', (width - padding) / 2)
-    .attr('y', height + 10)
-    .attr('id', 'legend-title')
-    .text('Temperature Gauge')
 
 
   // Treemap
@@ -140,10 +132,13 @@ const chart = async () => {
 
 
   node.append('text')
-    .attr('class', 'data-label')
-    .attr('x', d => (d.x0 + d.x1)/2)
-    .attr('y', d => (d.y0+ d.y1)/2)
-    .text(d => d.data.name)
+    .selectAll('tspan')
+    .data(d => d.data.name.split(/(?=[A-Z][^A-Z])/g))
+    .enter()
+    .append('tspan')
+    .attr('x', 4)
+    .attr('y', (d, i) => 13 + 10 * i)
+    .text(d => d)
 
   
 }
