@@ -2,7 +2,7 @@
 
 // Set the margin and padding of the SVG
 const margin = { top: 50, right: 50, bottom: 50, left: 50 }
-const padding = 60
+const padding = 50
 
 // Set the width and height using the current width and height of the div
 const width = 991
@@ -58,10 +58,7 @@ const chart = async () => {
   console.log(`palette: `, palette)
   const color = d3.scaleOrdinal(palette)
  
-  // Legend scale
-  const ordinal = d3.scaleOrdinal()
-    .domain([d3.set(root.leaves(), d => d.data.category).values()])
-    .range(palette)
+
 
   // Legend (using d3 SVG Legend (v4) library)
   // const legendOrdinal = d3.legendColor()
@@ -102,23 +99,31 @@ const chart = async () => {
   //   .call(d3.axisBottom(ordinal))
 
   // Legend (fresh start)
-  const legend = d3.select("svg")
-    .attr('id', 'legend')
+  const legend = d3.select("#legend")
+    .append("svg")
+    .attr('width', width)
+    // .attr('id', 'legend')
 
-  const legendKey = legend.selectAll("rect")
+  const legendKey = legend.append('g')
+    .attr(`tranform`, `translate(60, ${padding/10})`)
+    .selectAll("g")
     .data(categories)
     .enter()
-    .append("rect")
+    .append('g')
+    .attr(`transform`, (d, i) => `translate(${(i % 3)* padding * 3},
+    ${Math.floor(i / 3) * padding + Math.floor(i / 3)})`)
+
+    legendKey.append("rect")
     .attr('class', 'legend-item')
-    .attr("width", (width - padding) / palette.length)
-    .attr("height", 20)
-    .attr('x', (d, i) => i * ((width - padding) / palette.length))
-    .attr('y', height + 20)
-    .attr("fill", d => ordinal(d))
-    .attr("stroke", "gray")
+    .attr("width", padding/2)
+    .attr("height", padding/2)
+    .attr("fill", d => color(d))
+    .attr("stroke", "#fff")
 
-  
-
+    legendKey.append('text')
+    .attr('x', (padding/ 2)+5)
+    .attr('y', (padding / 3))
+    .text(d => d)  
 
   // Treemap
   const node = svg.selectAll('g')
