@@ -116,47 +116,48 @@ const chart = async () => {
     .attr('y', height + 20)
     .attr("fill", d => ordinal(d))
     .attr("stroke", "gray")
+
   
 
 
-  // // Treemap
-  // const node = svg.selectAll('g')
-  //   .data(root.leaves())
-  //   .enter().append('g')
-  //   .attr(`transform`, d => `translate(${d.x0}, ${d.y0})`)
+  // Treemap
+  const node = svg.selectAll('g')
+    .data(root.leaves())
+    .enter().append('g')
+    .attr(`transform`, d => `translate(${d.x0}, ${d.y0})`)
 
-  // node.append('rect')
-  //   .attr('class', 'tile')
-  //   .attr('data-name', d => d.data.name)
-  //   .attr('data-category', d => d.data.category)
-  //   .attr('data-value', d => d.data.value)
-  //   .attr('width', d => d.x1 - d.x0)
-  //   .attr('height', d => d.y1 - d.y0)
-  //   .attr('fill', d => color(d.data.category))
-  //   .attr('stroke', '#fff')
-  //   .on('mouseover', (d) => {
-  //     tooltip.transition().duration(200).style('opacity', 0.9)
-  //     tooltip.html(
-  //       `<p>Name:${d.data.name}<br>
-  //         Category:${d.data.category}<br>
-  //         Value:${d.data.value}
-  //       </p>`)
-  //       .attr('data-value', d.data.value)
-  //       .style('left', `${d3.event.layerX}px`)
-  //       .style('top', `${d3.event.layerY - 28}px`)
-  //   })
-  //   .on('mouseout', () => tooltip.transition().duration(500).style('opacity', 0)) 
+  node.append('rect')
+    .attr('class', 'tile')
+    .attr('data-name', d => d.data.name)
+    .attr('data-category', d => d.data.category)
+    .attr('data-value', d => d.data.value)
+    .attr('width', d => d.x1 - d.x0)
+    .attr('height', d => d.y1 - d.y0)
+    .attr('fill', d => color(d.data.category))
+    .attr('stroke', '#fff')
+    .on('mouseover', (d) => {
+      tooltip.transition().duration(200).style('opacity', 0.9)
+      tooltip.html(
+        `<p>Name:${d.data.name}<br>
+          Category:${d.data.category}<br>
+          Value:${d.data.value}
+        </p>`)
+        .attr('data-value', d.data.value)
+        .style('left', `${d3.event.layerX}px`)
+        .style('top', `${d3.event.layerY - 28}px`)
+    })
+    .on('mouseout', () => tooltip.transition().duration(500).style('opacity', 0)) 
 
-  // // Node labels
-  // // Code adopted from HIC https://codepen.io/HIC/full/bxzpRR/
-  // node.append('text')
-  //   .selectAll('tspan')
-  //   .data(d => d.data.name.split(/(?=[A-Z][^A-Z])/g))
-  //   .enter()
-  //   .append('tspan')
-  //   .attr('x', 4)
-  //   .attr('y', (d, i) => 13 + 10 * i)
-  //   .text(d => d)
+  // Node labels
+  // Code adopted from HIC https://codepen.io/HIC/full/bxzpRR/
+  node.append('text')
+    .selectAll('tspan')
+    .data(d => d.data.name.split(/(?=[A-Z][^A-Z])/g))
+    .enter()
+    .append('tspan')
+    .attr('x', 4)
+    .attr('y', (d, i) => 13 + 10 * i)
+    .text(d => d)
 
   
 }
