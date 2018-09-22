@@ -18,22 +18,6 @@ const svg = d3.select('#chart')
 // Create treemap container
 const treemap = d3.treemap().size([width, height])
 
-// Title
-const title = d3.select('#title')
-  .append('h2')
-  .text('My Treemap (Working Title)')
-
-// Description
-const description = d3.select('#description')
-  .append('h4')
-  .text(`Top XX Most XX Grouped by XX`)
-  .attr('id', 'description')
-
-// Tooltip  
-const tooltip = d3.select('#chart').append('div')
-  .attr('id', 'tooltip')
-  .style('opacity', 0)
-
 // Get Data
 const movieURL = ' https://cdn.rawgit.com/freeCodeCamp/testable-projects-fcc/a80ce8f9/src/data/tree_map/movie-data.json'
 const chart = async () => {
@@ -50,6 +34,22 @@ const chart = async () => {
   console.log(`root`, root)
   console.log(`d3.set(root.leaves(), d => d.data.category)`, d3.set(root.leaves(), d => d.data.category).values())
   console.log(`root.children.length `, root.children.length)
+
+  // Title
+  const title = d3.select('#title')
+    .append('h2')
+    .text(`${movieData.name} Treemap`)
+
+  // Description
+  const description = d3.select('#description')
+    .append('h4')
+    .text(`Top 100 Highest Grossing Movies Grouped By Genre`)
+    .attr('id', 'description')
+
+  // Tooltip  
+  const tooltip = d3.select('#chart').append('div')
+    .attr('id', 'tooltip')
+    .style('opacity', 0)
 
   // Color Scale
   console.log(`d3.schemeCategory10`, d3.schemeCategory10)
@@ -77,26 +77,26 @@ const chart = async () => {
   //   .attr('class', 'legend-item')
   //   .call(legendOrdinal)
 
-  // // Legend (manual version)
-  // const legend = svg.append('g')
-  //   .attr('id', 'legend')
+  // Legend (manual version)
+  const legend = d3.selectAll('#legend')
+    .append('g')
 
-  // // Add the color map
-  // legend.selectAll("rect")
-  //   .data(palette)
-  //   .enter()
-  //   .append('rect')
-  //   .attr('class', 'legend-item')
-  //   .attr("width", (width - padding) / palette.length)
-  //   .attr("height", 20)
-  //   .attr('x', (d, i) => i * ((width - padding) / palette.length))
-  //   .attr('y', height + 20)
-  //   .style("fill", (d) => d)
+  // Add the color map
+  legend.selectAll("rect")
+    .data(palette)
+    .enter()
+    .append('rect')
+    .attr('class', 'legend-item')
+    .attr("width", (width - padding) / palette.length)
+    .attr("height", 20)
+    .attr('x', (d, i) => i * ((width - padding) / palette.length))
+    .attr('y', height + 20)
+    .style("fill", (d) => d)
 
-  // legend.append('g')
-  //   .attr('transform', `translate(0, ${height + 45})`)
-  //   // .attr('transform', `translate(${padding}, ${height + margin.top + 20})`)
-  //   .call(d3.axisBottom(ordinal))
+  legend.append('g')
+    .attr('transform', `translate(0, ${height + 45})`)
+    // .attr('transform', `translate(${padding}, ${height + margin.top + 20})`)
+    .call(d3.axisBottom(ordinal))
 
 
   // Treemap
