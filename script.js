@@ -57,52 +57,12 @@ const chart = async () => {
   const palette = d3.schemeCategory10.slice(0, root.children.length)
   console.log(`palette: `, palette)
   const color = d3.scaleOrdinal(palette)
- 
 
-
-  // Legend (using d3 SVG Legend (v4) library)
-  // const legendOrdinal = d3.legendColor()
-  //   .orient('horizontal')
-  //   .shapePadding(padding)
-  //   .scale(ordinal) 
-
-  // svg.append("g")
-  //   .attr("class", "legendOrdinal")
-  //   .attr('id', 'legend')
-  //   .attr('transform', `translate(${0}, ${height + margin.top + 20})`)
-
-  // svg.select(".legendOrdinal")
-  //   .attr('class', 'legend-item')
-  //   .call(legendOrdinal)
-
-  // Legend (manual version)
-  // const legend = d3.selectAll('#legend')
-  //   .append('g')
-
-  // // Add the color map
-  // legend.selectAll("rect")
-  //   .data(categories)
-  //   .enter()
-  //   .append('rect')
-  //   .attr('class', 'legend-item')
-  //   .attr("width", (width - padding) / palette.length)
-  //   .attr("height", 20)
-  //   .attr('x', (d, i) => i * ((width - padding) / palette.length))
-  //   .attr('y', height + 20)
-  //   .style("fill", (d) => {
-  //     console.log(`${d} leads to ${ordinal(d)}`)
-  //     ordinal(d)})
-
-  // legend.append('g')
-  //   // .attr('transform', `translate(0, ${height})`)
-  //   // .attr('transform', `translate(${padding}, ${height + margin.top + 20})`)
-  //   .call(d3.axisBottom(ordinal))
-
-  // Legend (fresh start)
+  // Legend
+  // Code adopted from HIC https://codepen.io/HIC/full/bxzpRR/
   const legend = d3.select("#legend")
     .append("svg")
     .attr('width', width)
-    // .attr('id', 'legend')
 
   const legendKey = legend.append('g')
     .attr(`tranform`, `translate(60, ${padding/10})`)
@@ -122,7 +82,7 @@ const chart = async () => {
 
     legendKey.append('text')
     .attr('x', (padding/ 2)+5)
-    .attr('y', (padding / 3))
+    .attr('y', padding / 3)
     .text(d => d)  
 
   // Treemap
