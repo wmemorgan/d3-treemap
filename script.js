@@ -19,16 +19,15 @@ const svg = d3.select('#chart')
 const treemap = d3.treemap().size([width, height])
 
 // Title
-svg.append('text')
+const title = d3.select('#title')
+  .append('h2')
   .text('My Treemap (Working Title)')
-  .attr('id', 'title')
-  .attr(`transform`, `translate(${width / 2}, ${padding / 2})`)
 
 // Description
-svg.append('text')
+const description = d3.select('#description')
+  .append('h4')
   .text(`Top XX Most XX Grouped by XX`)
   .attr('id', 'description')
-  .attr(`transform`, `translate(${width / 2}, ${padding / 1})`)
 
 // Tooltip  
 const tooltip = d3.select('#chart').append('div')
