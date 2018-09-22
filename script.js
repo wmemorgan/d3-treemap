@@ -94,7 +94,7 @@ const chart = async () => {
     .style("fill", (d) => d)
 
   legend.append('g')
-    .attr('transform', `translate(0, ${height + 45})`)
+    // .attr('transform', `translate(0, ${height})`)
     // .attr('transform', `translate(${padding}, ${height + margin.top + 20})`)
     .call(d3.axisBottom(ordinal))
 
