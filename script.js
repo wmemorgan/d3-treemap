@@ -54,9 +54,8 @@ const chart = async () => {
 
   treemap(root)  
   console.log(`root`, root)
-  console.log(`d3.set(root.leaves(), d => d.data.category)`, d3.set(root.leaves(), d => d.data.category).count)
+  console.log(`d3.set(root.leaves(), d => d.data.category)`, d3.set(root.leaves(), d => d.data.category).values())
   console.log(`root.children.length `, root.children.length)
-  console.log(`d3.schemeCategory10[5]`, d3.schemeCategory10[5])
 
   // Legend (using d3 SVG Legend (v4) library)
   const ordinal = d3.scaleOrdinal()
