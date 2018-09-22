@@ -8,11 +8,6 @@ const padding = 60
 const width = 991
 const height = 743
 
-// Color Scale
-const color = d3.scaleOrdinal(d3.schemeCategory10)
-console.log(`d3.schemeCategory10`, d3.schemeCategory10)
-const palette = d3.schemeCategory10.slice(0, 7)
-console.log(`palette: `, palette)
 // Create svg and append to chart div
 const svg = d3.select('#chart')
   .append('svg')
@@ -57,12 +52,18 @@ const chart = async () => {
   console.log(`d3.set(root.leaves(), d => d.data.category)`, d3.set(root.leaves(), d => d.data.category).values())
   console.log(`root.children.length `, root.children.length)
 
-  // Legend (using d3 SVG Legend (v4) library)
+  // Color Scale
+  console.log(`d3.schemeCategory10`, d3.schemeCategory10)
+  const palette = d3.schemeCategory10.slice(0, root.children.length)
+  console.log(`palette: `, palette)
+  const color = d3.scaleOrdinal(palette)
+ 
+  // Legend scale
   const ordinal = d3.scaleOrdinal()
-    .domain(['Action','Drama','Adventure','Family','Animation','Comedy','Biography']) //scale for percentage label format
-    // .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2"])
+    .domain(d3.set(root.leaves(), d => d.data.category).values())
     .range(palette)
 
+  // Legend (using d3 SVG Legend (v4) library)
   // const legendOrdinal = d3.legendColor()
   //   .orient('horizontal')
   //   .shapePadding(padding)
@@ -77,33 +78,32 @@ const chart = async () => {
   //   .attr('class', 'legend-item')
   //   .call(legendOrdinal)
 
-  // Legend (manual version)
-  const legend = svg.append('g')
-    .attr('id', 'legend')
+  // // Legend (manual version)
+  // const legend = svg.append('g')
+  //   .attr('id', 'legend')
 
-  // Add the color map
-  legend.selectAll("rect")
-    .data(palette)
-    .enter()
-    .append('rect')
-    .attr('class', 'legend-item')
-    .attr("width", (width - padding) / palette.length)
-    .attr("height", 20)
-    .attr('x', (d, i) => i * ((width - padding) / palette.length))
-    .attr('y', height + 20)
-    .style("fill", (d) => d)
+  // // Add the color map
+  // legend.selectAll("rect")
+  //   .data(palette)
+  //   .enter()
+  //   .append('rect')
+  //   .attr('class', 'legend-item')
+  //   .attr("width", (width - padding) / palette.length)
+  //   .attr("height", 20)
+  //   .attr('x', (d, i) => i * ((width - padding) / palette.length))
+  //   .attr('y', height + 20)
+  //   .style("fill", (d) => d)
 
-  legend.append('g')
-    .attr('transform', `translate(0, ${height + 45})`)
-    // .attr('transform', `translate(${padding}, ${height + margin.top + 20})`)
-    .call(d3.axisBottom(ordinal))
+  // legend.append('g')
+  //   .attr('transform', `translate(0, ${height + 45})`)
+  //   // .attr('transform', `translate(${padding}, ${height + margin.top + 20})`)
+  //   .call(d3.axisBottom(ordinal))
 
 
   // Treemap
   const node = svg.selectAll('g')
     .data(root.leaves())
     .enter().append('g')
-    // .attr('class', 'node')
     .attr(`transform`, d => `translate(${d.x0}, ${d.y0})`)
 
   node.append('rect')
@@ -128,8 +128,8 @@ const chart = async () => {
     })
     .on('mouseout', () => tooltip.transition().duration(500).style('opacity', 0)) 
 
-
-
+  // Node labels
+  // Code adopted from HIC https://codepen.io/HIC/full/bxzpRR/
   node.append('text')
     .selectAll('tspan')
     .data(d => d.data.name.split(/(?=[A-Z][^A-Z])/g))
