@@ -101,6 +101,23 @@ const chart = async () => {
   //   // .attr('transform', `translate(${padding}, ${height + margin.top + 20})`)
   //   .call(d3.axisBottom(ordinal))
 
+  // Legend (fresh start)
+  const legend = d3.select("svg")
+    .attr('id', 'legend')
+
+  const legendKey = legend.selectAll("rect")
+    .data(categories)
+    .enter()
+    .append("rect")
+    .attr('class', 'legend-item')
+    .attr("width", (width - padding) / palette.length)
+    .attr("height", 20)
+    .attr('x', (d, i) => i * ((width - padding) / palette.length))
+    .attr('y', height + 20)
+    .attr("fill", d => ordinal(d))
+    .attr("stroke", "gray")
+  
+
 
   // // Treemap
   // const node = svg.selectAll('g')
