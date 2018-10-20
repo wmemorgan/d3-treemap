@@ -18,28 +18,44 @@ const svg = d3.select('#chart')
 // Create treemap container
 const treemap = d3.treemap().size([width, height])
 
-// Select dataset
+// Dataset menu behavior
+const dataSetList = document.getElementsByClassName('data-set')
+
+// const removeShowClass = () => {
+//   if (document.querySelector('.show')) {
+//     document.querySelector('.show').classList.remove('show')
+//   }
+// }
+
+const addShowClass = (i) => {
+  if (document.querySelector('.show')) {
+    document.querySelector('.show').classList.remove('show')
+  }
+  dataSetList[i].classList.add('show')
+}
+
 const selectData = async (url, str) => {
-  let getData = await fetch(url)
-  let data = await getData.json()
-  console.log(`data: `, data)
+  // return () => {
+    let getData = await fetch(url)
+    let data = await getData.json()
+    console.log(`data: `, data)
 
-  // Chart Description
-  const description = await d3.select('#description')
-    .append('h4')
-    .text(str)
-    .attr('id', 'description')
+    // Chart Description
+    const description = await d3.select('#description')
+      .append('h4')
+      .text(str)
+      .attr('id', 'description')
 
-  return data
+    return data
+  // }
 }
 
 // Get Data
 const movieURL = ' https://cdn.rawgit.com/freeCodeCamp/testable-projects-fcc/a80ce8f9/src/data/tree_map/movie-data.json'
 const videoGameURL = 'https://cdn.rawgit.com/freeCodeCamp/testable-projects-fcc/a80ce8f9/src/data/tree_map/video-game-sales-data.json'
 const kickStarterURL = 'https://cdn.rawgit.com/freeCodeCamp/testable-projects-fcc/a80ce8f9/src/data/tree_map/kickstarter-funding-data.json'
-const chart = async () => {
-  let dataset = await selectData(movieURL, "Top 100 Highest Grossing Movies Grouped By Genre")
-
+const chart = async (url = movieURL, str ="Top 100 Highest Grossing Movies Grouped By Genre") => {
+  let dataset = await selectData(url, str)
   const root = d3.hierarchy(dataset)
     .eachBefore(d => d.data.id = (d.parent ? d.parent.data.id + "." : "") + d.data.name)
     .sum(d => d.value)
@@ -55,8 +71,6 @@ const chart = async () => {
   const title = d3.select('#title')
     .append('h2')
     .text(`${dataset.name} Treemap`)
-
-
 
   // Tooltip  
   const tooltip = d3.select('#chart').append('div')
@@ -100,7 +114,7 @@ const chart = async () => {
   const node = svg.selectAll('g')
     .data(root.leaves())
     .enter().append('g')
-    .attr(`transform`, d => `translate(${d.x0}, ${d.y0})`)
+    .attr(`transform`, d => `translate(${d.x0+50}, ${d.y0})`)
 
   node.append('rect')
     .attr('class', 'tile')
@@ -138,3 +152,38 @@ const chart = async () => {
   
 }
 chart()
+
+
+const clearChart = () => {
+  document.getElementById('title').innerHTML = ''
+  document.getElementById('description').innerHTML = ''
+  document.getElementById('legend').innerHTML = ''
+  d3.selectAll('svg > *').remove()
+
+}
+
+const switchData = (i) => {
+  return () => {
+    clearChart()
+    let elemID = document.getElementsByClassName("data-set")[i].id
+    addShowClass(i)
+    switch (elemID) {
+      case 'movies':
+        chart(movieURL, "Top 100 Highest Grossing Movies Grouped By Genre")
+        break
+      case 'videogames':
+        chart(videoGameURL, "Top 100 Most Sold Video Games Grouped by Platform")
+        break
+      case 'kickstarter':
+        chart(kickStarterURL, "Top 100 Most Pledged Kickstarter Campaigns Grouped By Category")
+        break
+      default:
+        chart()
+    }
+  }
+}
+
+for (let i = 0; i < dataSetList.length; i++) {
+  dataSetList[i].addEventListener('click', switchData(i))
+  console.log('add event listener to item: ', dataSetList[i])
+}
