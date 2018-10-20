@@ -18,14 +18,29 @@ const svg = d3.select('#chart')
 // Create treemap container
 const treemap = d3.treemap().size([width, height])
 
+// Select dataset
+const selectData = async (url, str) => {
+  let getData = await fetch(url)
+  let data = await getData.json()
+  console.log(`data: `, data)
+
+  // Chart Description
+  const description = await d3.select('#description')
+    .append('h4')
+    .text(str)
+    .attr('id', 'description')
+
+  return data
+}
+
 // Get Data
 const movieURL = ' https://cdn.rawgit.com/freeCodeCamp/testable-projects-fcc/a80ce8f9/src/data/tree_map/movie-data.json'
+const videoGameURL = 'https://cdn.rawgit.com/freeCodeCamp/testable-projects-fcc/a80ce8f9/src/data/tree_map/video-game-sales-data.json'
+const kickStarterURL = 'https://cdn.rawgit.com/freeCodeCamp/testable-projects-fcc/a80ce8f9/src/data/tree_map/kickstarter-funding-data.json'
 const chart = async () => {
-  let getMovieData = await fetch(movieURL)
-  let movieData = await getMovieData.json()
-  console.log(`movieData: `, movieData)
+  let dataset = await selectData(movieURL, "Top 100 Highest Grossing Movies Grouped By Genre")
 
-  const root = d3.hierarchy(movieData)
+  const root = d3.hierarchy(dataset)
     .eachBefore(d => d.data.id = (d.parent ? d.parent.data.id + "." : "") + d.data.name)
     .sum(d => d.value)
     .sort((a, b) => b.height - a.height || b.value - a.value)
@@ -39,13 +54,9 @@ const chart = async () => {
   // Title
   const title = d3.select('#title')
     .append('h2')
-    .text(`${movieData.name} Treemap`)
+    .text(`${dataset.name} Treemap`)
 
-  // Description
-  const description = d3.select('#description')
-    .append('h4')
-    .text(`Top 100 Highest Grossing Movies Grouped By Genre`)
-    .attr('id', 'description')
+
 
   // Tooltip  
   const tooltip = d3.select('#chart').append('div')
