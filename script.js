@@ -18,55 +18,35 @@ const svg = d3.select('#chart')
 // Create treemap container
 const treemap = d3.treemap().size([width, height])
 
-// Dataset menu behavior
+// Declare dataset variables
 const dataSetList = document.getElementsByClassName('data-set')
-
-// const removeShowClass = () => {
-//   if (document.querySelector('.show')) {
-//     document.querySelector('.show').classList.remove('show')
-//   }
-// }
-
-const addShowClass = (i) => {
-  if (document.querySelector('.show')) {
-    document.querySelector('.show').classList.remove('show')
-  }
-  dataSetList[i].classList.add('show')
-}
-
-const selectData = async (url, str) => {
-  // return () => {
-    let getData = await fetch(url)
-    let data = await getData.json()
-    console.log(`data: `, data)
-
-    // Chart Description
-    const description = await d3.select('#description')
-      .append('h4')
-      .text(str)
-      .attr('id', 'description')
-
-    return data
-  // }
-}
-
-// Get Data
 const movieURL = ' https://cdn.rawgit.com/freeCodeCamp/testable-projects-fcc/a80ce8f9/src/data/tree_map/movie-data.json'
 const videoGameURL = 'https://cdn.rawgit.com/freeCodeCamp/testable-projects-fcc/a80ce8f9/src/data/tree_map/video-game-sales-data.json'
 const kickStarterURL = 'https://cdn.rawgit.com/freeCodeCamp/testable-projects-fcc/a80ce8f9/src/data/tree_map/kickstarter-funding-data.json'
+
+// Get Data
+const getDataSet = async (url, str) => {
+  let getData = await fetch(url)
+  let data = await getData.json()
+  console.log(`data: `, data)
+
+  // Chart Description
+  const description = await d3.select('#description')
+    .append('h4')
+    .text(str)
+
+  return data
+}
+
 const chart = async (url = movieURL, str ="Top 100 Highest Grossing Movies Grouped By Genre") => {
-  let dataset = await selectData(url, str)
+  let dataset = await getDataSet(url, str)
   const root = d3.hierarchy(dataset)
     .eachBefore(d => d.data.id = (d.parent ? d.parent.data.id + "." : "") + d.data.name)
     .sum(d => d.value)
     .sort((a, b) => b.height - a.height || b.value - a.value)
 
   treemap(root)  
-  console.log(`root`, root)
-  console.log(`d3.set(root.leaves(), d => d.data.category)`, d3.set(root.leaves(), d => d.data.category).values())
-  console.log(`root.children.length `, root.children.length)
   const categories = d3.set(root.leaves(), d => d.data.category).values()
-  console.log(`categories: ${categories}`)
   // Title
   const title = d3.select('#title')
     .append('h2')
@@ -78,9 +58,7 @@ const chart = async (url = movieURL, str ="Top 100 Highest Grossing Movies Group
     .style('opacity', 0)
 
   // Color Scale
-  console.log(`d3.schemeCategory10`, d3.schemeCategory10)
   const palette = d3.schemeCategory10.slice(0, root.children.length)
-  console.log(`palette: `, palette)
   const color = d3.scaleOrdinal(palette)
 
   // Legend
@@ -148,21 +126,35 @@ const chart = async (url = movieURL, str ="Top 100 Highest Grossing Movies Group
     .attr('x', 4)
     .attr('y', (d, i) => 13 + 10 * i)
     .text(d => d)
-
-  
 }
+
+// Load chart and default data set
 chart()
 
-
+// Dataset Menu Behavior
 const clearChart = () => {
   document.getElementById('title').innerHTML = ''
   document.getElementById('description').innerHTML = ''
   document.getElementById('legend').innerHTML = ''
+  let element = document.getElementById('tooltip');
+  element.parentNode.removeChild(element)
   d3.selectAll('svg > *').remove()
-
 }
 
-const switchData = (i) => {
+const removeShowClass = () => {
+  if (document.querySelector('.show')) {
+    document.querySelector('.show').classList.remove('show')
+  }
+}
+
+const addShowClass = (i) => {
+  if (document.querySelector('.show')) {
+    document.querySelector('.show').classList.remove('show')
+  }
+  dataSetList[i].classList.add('show')
+}
+
+const selectDataSet = (i) => {
   return () => {
     clearChart()
     let elemID = document.getElementsByClassName("data-set")[i].id
@@ -184,6 +176,6 @@ const switchData = (i) => {
 }
 
 for (let i = 0; i < dataSetList.length; i++) {
-  dataSetList[i].addEventListener('click', switchData(i))
+  dataSetList[i].addEventListener('click', selectDataSet(i))
   console.log('add event listener to item: ', dataSetList[i])
 }
