@@ -5,6 +5,7 @@
 /* Color palette */
 :root {
 --axis-color: #000;
+--text-primary-color: #FFFFFF;
 --bar-standard-color: #265077;
 --bar-selected-color: #51a7f8;
 --default-background-color: #022140;
@@ -21,6 +22,35 @@ body {
 
 .container {
   background: var(--overlay-bg-color);
+}
+
+.select-data {
+  width: 75%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: center;
+  list-style: none;
+  margin: 0 auto;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+.data-set {
+  font-size: 0.85rem;
+  font-weight: bold;
+  letter-spacing: 0.15em;
+  text-align: center;
+  padding: 0.5rem;
+  text-transform: uppercase;
+  border-radius: 3px;
+  box-shadow: 1px 1px 0 rgb(0,0,0,.25);
+  cursor: pointer;
+}
+
+.data-set:hover,
+.data-set.show {
+  color: var(--text-primary-color);
+  background-color: var(--default-background-color);
 }
 
 #title, #description {
